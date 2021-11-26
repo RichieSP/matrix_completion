@@ -1,8 +1,8 @@
 import abc
-from matrix_completion import MatrixCompletion, TraceNorm
-from sample import Sample, LabeledSample
-import random
+from matrix_completion import MatrixCompletion, TraceNorm, PCPursuit, Naive
 import numpy as np
+import random
+from sample import Sample, LabeledSample
 from termcolor import colored
 
 
@@ -78,7 +78,24 @@ class Evaluator:
         sample = uniform_random_sample(X, 80)
         self.test(sample)
 
+    def test_num_samples(self):
+        x = list(range(1, 101))
+        y = []
+
+        for i in range(1, 101):
+            X = np.loadtxt(open("data/Paris-Distances.csv", "rb"), delimiter=",", skiprows=1)
+            sample = uniform_random_sample(X, i)
+            X = self._mc.solve(sample)
+            loss = sample.evaluate(X)
+            y.append(loss)
+
+        print(x)
+        print(y)
+
 
 mc = TraceNorm()
+#mc = PCPursuit(alpha = 3.)
+#mc = Naive()
 evaluator = Evaluator(mc, verbose = True)
 evaluator.test_all()
+#evaluator.test_num_samples()

@@ -46,6 +46,7 @@ class LabeledSample(Sample):
 
         loss = np.linalg.norm(X - self._M, ord = "fro")
         print(f"Loss (Frobenius norm): {colored('{:.4f}'.format(loss), 'blue')}")
+        return loss
 
 
 class UnlabeledSample(Sample):
