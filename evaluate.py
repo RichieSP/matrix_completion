@@ -54,6 +54,7 @@ class Evaluator:
     def test_all(self):
         self.test_small()
         self.test_geographical()
+        self.test_generated()
 
     def test(self, sample):
         if self._verbose:
@@ -78,12 +79,17 @@ class Evaluator:
         sample = uniform_random_sample(X, 80)
         self.test(sample)
 
+    def test_generated(self):
+        X = np.loadtxt(open("data/exact.csv", "rb"), delimiter=",")
+        sample = uniform_random_sample(X, 80)
+        self.test(sample)
+
     def test_num_samples(self):
-        x = list(range(1, 101))
+        x = list(range(1, 100))
         y = []
 
-        for i in range(1, 101):
-            X = np.loadtxt(open("data/Paris-Distances.csv", "rb"), delimiter=",", skiprows=1)
+        for i in range(1, 100):
+            X = np.loadtxt(open("data/exact.csv", "rb"), delimiter=",")
             sample = uniform_random_sample(X, i)
             X = self._mc.solve(sample)
             loss = sample.evaluate(X)
@@ -93,9 +99,10 @@ class Evaluator:
         print(y)
 
 
-mc = TraceNorm()
+#mc = TraceNorm()
 #mc = PCPursuit(alpha = 3.)
-#mc = Naive()
+mc = Naive()
 evaluator = Evaluator(mc, verbose = True)
-evaluator.test_all()
-#evaluator.test_num_samples()
+#evaluator.test_all()
+#evaluator.test_generated()
+evaluator.test_num_samples()
