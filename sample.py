@@ -44,8 +44,10 @@ class LabeledSample(Sample):
     def evaluate(self, X):
         assert X.shape == self.shape
 
-        loss = np.linalg.norm(X - self._M, ord = "fro")
-        print(f"Loss (Frobenius norm): {colored('{:.4f}'.format(loss), 'blue')}")
+        A = np.linalg.norm(X - self._M, ord = "fro")
+        B = np.linalg.norm(self._M, ord = "fro")
+        loss = A / B
+        print(f"Loss (Relative Frobenius norm): {colored('{:.4f}'.format(loss), 'blue')}")
         return loss
 
 

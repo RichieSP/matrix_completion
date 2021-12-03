@@ -31,15 +31,13 @@ class TraceNorm(MatrixCompletion):
 
 
 class PCPursuit(MatrixCompletion):
-    def __init__(self, alpha = 1.):
-        self._alpha = alpha
-
     def solve(self, sample: Sample):
         n, m = sample.shape
+        alpha = 1. / np.sqrt(max(n, m))
         L = cp.Variable(sample.shape)
         S = cp.Variable(sample.shape)
 
-        loss = cp.norm(L, "nuc") + self._alpha * cp.norm(S, 1)
+        loss = cp.norm(L, "nuc") + alpha * cp.pnorm(S, p=1)
         objective = cp.Minimize(loss)
         constraints = [
             L[i][j] + S[i][j] == mij
@@ -49,9 +47,6 @@ class PCPursuit(MatrixCompletion):
 
         prob = cp.Problem(objective, constraints)
         prob.solve()
-
-        print(f"L:\n{L.value}")
-        print(f"S:\n{S.value}")
 
         return L.value + S.value
 
